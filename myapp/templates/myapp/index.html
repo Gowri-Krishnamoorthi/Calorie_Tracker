@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Calorie Tracker</h2>
+
+        <!-- Form to Add Food -->
+        <div class="card p-4 shadow-sm">
+            <form method="POST" class="d-flex align-items-center">
+                {% csrf_token %}
+                <select name="food_consumed" id="food_consumed" class="form-select me-3" required>
+                    <option value="" disabled selected>Select Food</option>
+                    {% for food in foods %}
+                    <option value="{{ food.name }}">{{ food.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-success">Add</button>
+            </form>
+        </div>
+
+        <!-- Displaying Consumed Food -->
+        {% if consumed_foods %}
+        <div class="mt-4">
+            <h4>Consumed Food</h4>
+            <table id="table" class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Carbs (g)</th>
+                        <th>Protein (g)</th>
+                        <th>Fats (g)</th>
+                        <th>Calories</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in consumed_foods %}
+                    <tr>
+                        <td>{{ c.food_consumed.name }}</td>
+                        <td>{{ c.food_consumed.carbs }}</td>
+                        <td>{{ c.food_consumed.protein }}</td>
+                        <td>{{ c.food_consumed.fats }}</td>
+                        <td>{{ c.food_consumed.calories }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Total</td>
+                        <td id="totalcarbs"></td>
+                        <td id="totalprotein"></td>
+                        <td id="totalfats"></td>
+                        <td id="totalcalories"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center mt-4">No food consumed yet.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
+
+<script>
+
+       var table = document.getElementById('table');
+       var carbs = 0 , protein = 0, fats = 0, calories = 0;
+
+       for(var i=1; i<table.rows.length-1; i++){
+        console.log(table.rows[i].cells[1].innerHTML);
+        
+        carbs += parseFloat(table.rows[i].cells[1].innerHTML);
+        carbs = Math.round(carbs);
+
+        protein += parseFloat(table.rows[i].cells[2].innerHTML);
+        protein = Math.round(protein);
+
+        fats += parseFloat(table.rows[i].cells[3].innerHTML);
+        fats = Math.round(fats);
+
+        calories += parseFloat(table.rows[i].cells[4].innerHTML);
+        calories = Math.round(calories);
+
+       }
+       console.log(fats)
+       document.getElementById("totalcarbs").innerHTML = carbs;
+       document.getElementById("totalprotein").innerHTML = protein;
+       document.getElementById("totalfats").innerHTML = fats ;
+       document.getElementById("totalcalories").innerHTML = calories;
+
+</script>
+
+
+
+
+<!-- <html>
+    <head>
+
+    </head>
+    <body>
+
+          <form method = 'post'>
+                {% csrf_token %}
+                <select name="food_consumed"  id="food_consumed">
+                    {% for food in foods %}
+                    <option value="{{food.name}}">{{ food.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Add</button>
+          </form>
+
+              {% for c in consumed_foods %}
+
+                 {{ c.food_consumed.name }}--{{ c.food_consumed.carbs }}--{{ c.food_consumed.protein }}---{{ c.food_consumed.fats }}---{{ c.food_consumed.calories }}<br>
+
+              {% endfor %}
+
+    </body>
+</html> -->
